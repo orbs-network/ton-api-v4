@@ -122,3 +122,9 @@ process.on('uncaughtException', function (err) {
     // Handle the error prevents process exit    
     console.error('uncaughtException:', err);
 });
+
+
+process.on('unhandledRejection', (reason, p) => {
+    console.error(reason, 'Unhandled Rejection at Promise', p);
+}
+);
