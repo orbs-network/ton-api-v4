@@ -47,7 +47,7 @@ export function handleAccountGet(client: LiteClient) {
                 } else {
                     state = {
                         type: 'frozen',
-                        stateHash: account.state.storage.state.stateHash.toString('base64')
+                        stateHash: account.state.storage.state.stateHash
                     };
                 }
             } else {
@@ -76,7 +76,7 @@ export function handleAccountGet(client: LiteClient) {
                         },
                         last: account.lastTx ? {
                             lt: account.lastTx.lt,
-                            hash: account.lastTx.hash.toString('base64')
+                            hash: account.lastTx.hash
                         } : null,
                         storageStat: storage
                     },
@@ -84,8 +84,8 @@ export function handleAccountGet(client: LiteClient) {
                         workchain: mcInfo.id.workchain,
                         seqno: mcInfo.id.seqno,
                         shard: mcInfo.id.shard,
-                        fileHash: mcInfo.id.fileHash.toString('base64'),
-                        rootHash: mcInfo.id.rootHash.toString('base64')
+                        fileHash: mcInfo.id.fileHash,
+                        rootHash: mcInfo.id.rootHash
                     }
                 });
         } catch (e) {
