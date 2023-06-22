@@ -71,7 +71,6 @@ const start = async () => {
         //
 
         log('Downloading current state....');
-
         let mc = await client.main.getMasterchainInfoExt().catch(e => {
             console.error('getMasterchainInfoExt', e);
         });
@@ -89,14 +88,21 @@ const start = async () => {
         const res = await startApi(client.main, client.child, blockSync);
         app = res.app
         connections = res.connections
+<<<<<<< HEAD
         // if(!PRODUCTION){        
         //     await new Promise(resolve => setTimeout(resolve, 15000));
         //     throw ("My error")
         // }
+=======
+
+        // DEBUG!!!
+        // await new Promise(resolve => setTimeout(resolve, 5000));
+        // throw ("DEBUG")
+>>>>>>> 201fcec (fix logs)
 
 
     } catch (e) {
-        console.log(e)
+        console.error(e)
         console.log("closing app")
         closeConnections(connections)
         closeEngine(client?.main.engine)
