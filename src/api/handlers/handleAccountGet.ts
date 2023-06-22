@@ -10,7 +10,7 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { LiteClient } from 'ton-lite-client';
 import { warn } from "../../utils/log";
 import { Address } from 'ton';
-import {bigintToBase64} from "../../utils/convert";
+import { bigintToBase64 } from "../../utils/convert";
 
 export function handleAccountGet(client: LiteClient) {
     return async (req: FastifyRequest, res: FastifyReply) => {
@@ -85,8 +85,8 @@ export function handleAccountGet(client: LiteClient) {
                         workchain: mcInfo.id.workchain,
                         seqno: mcInfo.id.seqno,
                         shard: mcInfo.id.shard,
-                        fileHash: mcInfo.id.fileHash.toString('base64'),
-                        rootHash: mcInfo.id.rootHash.toString('base64')
+                        fileHash: mcInfo.id.fileHash,
+                        rootHash: mcInfo.id.rootHash
                     }
                 });
         } catch (e) {
