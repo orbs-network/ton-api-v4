@@ -119,14 +119,20 @@ export class BlockSync extends EventEmitter {
         log('Starting from block: ' + this.#current.last.seqno);
         backoff(async () => {
             while (!this.#stopped) {
-                let nmc = await this.#client.getMasterchainInfoExt();
-                if (nmc.last.seqno > this.#current.last.seqno) {
-                    this.#current = nmc;
-                    this.#fullBlockSync.invalidate();
-                    this.emit('block', convertBlock(nmc));
-                    log('New block: ' + this.#current.last.seqno);
+                try {
+                    let nmc = await this.#client.getMasterchainInfoExt()
+                    if (nmc.last.seqno > this.#current.last.seqno) {
+                        this.#current = nmc;
+                        this.#fullBlockSync.invalidate();
+                        this.emit('block', convertBlock(nmc));
+                        log('New block: ' + this.#current.last.seqno);
+                    }
+                    await delay(1000);
+                } catch (e) {
+                    // retry
+                    console.error('getMasterchainInfoExt', e);
+                    await delay(50);
                 }
-                await delay(1000);
             }
         });
     }
