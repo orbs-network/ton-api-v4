@@ -88,18 +88,6 @@ const start = async () => {
         const res = await startApi(client.main, client.child, blockSync);
         app = res.app
         connections = res.connections
-<<<<<<< HEAD
-        // if(!PRODUCTION){        
-        //     await new Promise(resolve => setTimeout(resolve, 15000));
-        //     throw ("My error")
-        // }
-=======
-
-        // DEBUG!!!
-        // await new Promise(resolve => setTimeout(resolve, 5000));
-        // throw ("DEBUG")
->>>>>>> 201fcec (fix logs)
-
 
     } catch (e) {
         console.error(e)
@@ -128,9 +116,3 @@ process.on('uncaughtException', function (err) {
     // Handle the error prevents process exit    
     console.error('uncaughtException:', err);
 });
-
-
-process.on('unhandledRejection', (reason, p) => {
-    console.error(reason, 'Unhandled Rejection at Promise', p);
-}
-);
