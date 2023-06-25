@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {SocketStream} from "@fastify/websocket";
+import { SocketStream } from "@fastify/websocket";
 
 require('dotenv').config();
 
@@ -14,15 +14,15 @@ import { startApi } from "./api/startApi";
 import { createClient } from "./client";
 import { BlockSync } from "./sync/BlockSync";
 import { log } from "./utils/log";
-import {LiteEngine} from "ton-lite-client/dist/engines/engine";
-import {LiteClient} from "ton-lite-client";
+import { LiteEngine } from "ton-lite-client/dist/engines/engine";
+import { LiteClient } from "ton-lite-client";
 
-const LIMIT = 5;
+const LIMIT = 2;
 let limitCounter = 0;
 
-const closeConnections = (connections: SocketStream[] | undefined)=>{
-    connections?.forEach(c=>{
-        try{
+const closeConnections = (connections: SocketStream[] | undefined) => {
+    connections?.forEach(c => {
+        try {
             c.socket.close()
         } catch (e) {
             console.log(`Error with closing connection (socket - ${c.socket.url})`)
@@ -31,18 +31,18 @@ const closeConnections = (connections: SocketStream[] | undefined)=>{
     })
 }
 
-const closeEngine = (engine: LiteEngine | undefined)=>{
-    try{
+const closeEngine = (engine: LiteEngine | undefined) => {
+    try {
         engine?.close()
-    } catch (e){
+    } catch (e) {
         console.log("Error with closing engine")
         console.log(e)
     }
 }
 
-const closeClients = (child: { clients: LiteClient[] }[] | undefined)=>{
-    child?.forEach(c=>c.clients.forEach(cc=>{
-        try{
+const closeClients = (child: { clients: LiteClient[] }[] | undefined) => {
+    child?.forEach(c => c.clients.forEach(cc => {
+        try {
             cc.engine.close()
         } catch (e) {
             console.log("Error with closing child clients")
@@ -53,12 +53,13 @@ const closeClients = (child: { clients: LiteClient[] }[] | undefined)=>{
 
 const start = async () => {
     let app, client, blockSync, connections
-
-    try{
+    log(`Container START ======================================`);
+    try {
         //
         // Create client
         //
-
+        log(`Start Iteration #${limitCounter} `)
+        log(`======================================`)
         log('Downloading configuration...');
         client = await createClient();
         if (!client) {
@@ -88,8 +89,10 @@ const start = async () => {
         const res = await startApi(client.main, client.child, blockSync);
         app = res.app
         connections = res.connections
-        // await new Promise(resolve => setTimeout(resolve, 15000));
-        // throw ("My error")
+        // if(!PRODUCTION){        
+        //     await new Promise(resolve => setTimeout(resolve, 15000));
+        //     throw ("My error")
+        // }
 
 
     } catch (e) {
@@ -101,16 +104,15 @@ const start = async () => {
         await blockSync?.stop()
         await app?.close()
         limitCounter++
-        console.log("app closed")
-        if(limitCounter<LIMIT){
+        console.log(`[COUNT: ${limitCounter}]\tapp closed`)
+        if (limitCounter < LIMIT) {
             await new Promise(resolve => setTimeout(resolve, 5000));
             start()
         } else {
-            console.log("error limit is over")
+            console.log(`[COUNT: ${limitCounter}]\terror limit exceeded`)
+            console.log(`EXIT!`)
         }
-
     }
-
 };
 
 start()
