@@ -116,3 +116,9 @@ const start = async () => {
 };
 
 start()
+
+// catches the exception thrown when trying to connect to a dead liteserver.
+process.on('uncaughtException', function (err) {
+    // Handle the error prevents process exit    
+    console.error('uncaughtException:', err);
+});
