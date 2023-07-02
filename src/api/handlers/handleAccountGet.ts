@@ -9,7 +9,8 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { LiteClient } from 'ton-lite-client';
 import { warn } from "../../utils/log";
-import { Address, Cell } from 'ton';
+import { Address } from 'ton';
+import {bigintToBase64} from "../../utils/convert";
 
 export function handleAccountGet(client: LiteClient) {
     return async (req: FastifyRequest, res: FastifyReply) => {
@@ -26,12 +27,12 @@ export function handleAccountGet(client: LiteClient) {
             let storage: any;
             if (account.state) {
                 storage = {
-                    lastPaid: account.state.storageStat.lastPaid,
-                    duePayment: account.state.storageStat.duePayment ? account.state.storageStat.duePayment.toString(10) : null,
+                    lastPaid: account.state.storageStats.lastPaid,
+                    duePayment: account.state.storageStats.duePayment ? account.state.storageStats.duePayment.toString(10) : null,
                     used: {
-                        bits: account.state.storageStat.used.bits,
-                        cells: account.state.storageStat.used.cells,
-                        publicCells: account.state.storageStat.used.publicCells
+                        bits: account.state.storageStats.used.bits.toString(),
+                        cells: account.state.storageStats.used.cells.toString(),
+                        publicCells: account.state.storageStats.used.publicCells.toString()
                     }
                 };
                 if (account.state.storage.state.type === 'uninit') {
@@ -47,7 +48,7 @@ export function handleAccountGet(client: LiteClient) {
                 } else {
                     state = {
                         type: 'frozen',
-                        stateHash: account.state.storage.state.stateHash.toString('base64')
+                        stateHash: bigintToBase64(account.state.storage.state.stateHash)
                     };
                 }
             } else {
@@ -56,10 +57,10 @@ export function handleAccountGet(client: LiteClient) {
             }
 
             // Convert currencies
-            let currencies: { [id: number]: number } = {};
-            if (account.balance.extraCurrencies) {
-                for (let ec of account.balance.extraCurrencies) {
-                    currencies[ec[0]] = ec[1];
+            let currencies: { [id: number]: string } = {};
+            if (account.balance.other) {
+                for (let ec of account.balance.other) {
+                    currencies[ec[0]] = ec[1].toString();
                 }
             }
 
@@ -71,12 +72,12 @@ export function handleAccountGet(client: LiteClient) {
                     account: {
                         state,
                         balance: {
-                            coins: account.balance.coins.toString(10),
+                            coins: account.balance.coins.toString(),
                             currencies
                         },
                         last: account.lastTx ? {
-                            lt: account.lastTx.lt,
-                            hash: account.lastTx.hash.toString('base64')
+                            lt: account.lastTx.lt.toString(),
+                            hash: bigintToBase64(account.lastTx.hash)
                         } : null,
                         storageStat: storage
                     },
