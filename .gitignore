@@ -1,4 +1,6 @@
-node_modules
+node_modules/
+.vscode/
+.DS_Store
 dist
 
 .yarn/*
@@ -7,3 +9,5 @@ dist
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
+
+run-on-node*
