@@ -10,7 +10,7 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { LiteClient } from 'ton-lite-client';
 import { warn } from "../../utils/log";
 import { Address } from 'ton';
-import {bigintToBase64} from "../../utils/convert";
+import { bigintToBase64 } from "../../utils/convert";
 
 export function handleAccountGetLite(client: LiteClient) {
     return async (req: FastifyRequest, res: FastifyReply) => {
@@ -30,9 +30,9 @@ export function handleAccountGetLite(client: LiteClient) {
                     lastPaid: account.state.storageStats.lastPaid,
                     duePayment: account.state.storageStats.duePayment ? account.state.storageStats.duePayment.toString() : null,
                     used: {
-                        bits: account.state.storageStats.used.bits.toString(),
-                        cells: account.state.storageStats.used.cells.toString(),
-                        publicCells: account.state.storageStats.used.publicCells.toString()
+                        bits: account.state.storageStats.used.bits,
+                        cells: account.state.storageStats.used.cells,
+                        publicCells: account.state.storageStats.used.publicCells
                     }
                 };
                 if (account.state.storage.state.type === 'uninit') {

@@ -30,9 +30,9 @@ export function handleAccountGet(client: LiteClient) {
                     lastPaid: account.state.storageStats.lastPaid,
                     duePayment: account.state.storageStats.duePayment ? account.state.storageStats.duePayment.toString(10) : null,
                     used: {
-                        bits: account.state.storageStats.used.bits.toString(),
-                        cells: account.state.storageStats.used.cells.toString(),
-                        publicCells: account.state.storageStats.used.publicCells.toString()
+                        bits: account.state.storageStats.used.bits,
+                        cells: account.state.storageStats.used.cells,
+                        publicCells: account.state.storageStats.used.publicCells
                     }
                 };
                 if (account.state.storage.state.type === 'uninit') {
